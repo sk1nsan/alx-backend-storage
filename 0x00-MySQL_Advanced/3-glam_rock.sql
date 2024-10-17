@@ -1,3 +1,3 @@
--- Best band ever!
--- ranks country origins of bands, ordered by the number of (non-unique) fans
-SELECT origin, SUM(fans) AS nb_fans FROM metal_bands GROUP BY origin ORDER BY nb_fans DESC; 
+-- Old school band
+--  lists all bands with Glam rock as their main style, ranked by their longevity
+SELECT band_name, COALESCE(split, 2022) - formed as lifespan FROM metal_bands WHERE style LIKE '%Glam rock%'; 
