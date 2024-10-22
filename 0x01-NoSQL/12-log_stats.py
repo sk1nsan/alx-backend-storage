@@ -9,9 +9,10 @@ if __name__ == "__main__":
     client = MongoClient('mongodb://127.0.0.1:27017')
     logs = client.logs.nginx
 
-    print(f"{logs.count()} logs")
+    print(f"{len(list(logs.find()))} logs")
     print("Methods:")
     for method in methods:
-        count = logs.count({"method": method})
+        count = len(list(logs.find({"method": method})))
         print(f"\tmethod {method}: {count}")
-    print(f"{logs.count({"method": "GET", "path": "/status"})} status check")
+    print(f"{len(list(
+        logs.find({"method": "GET", "path": "/status"})))} status check")
