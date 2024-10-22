@@ -14,5 +14,5 @@ if __name__ == "__main__":
     for method in methods:
         count = len(list(logs.find({"method": method})))
         print(f"\tmethod {method}: {count}")
-    print(f"{len(list(
-        logs.find({"method": "GET", "path": "/status"})))} status check")
+    count = len(list(logs.find({"method": "GET", "path": "/status"})))
+    print(f"{count} status check")
