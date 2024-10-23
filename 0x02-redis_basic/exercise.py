@@ -3,10 +3,8 @@
 
 import redis
 from uuid import uuid4
-from typing import Callable, TypeVar, Union
+from typing import Callable, Union, Any
 from functools import wraps
-
-T = TypeVar("T")
 
 
 def count_calls(method: Callable) -> Callable:
@@ -23,6 +21,19 @@ def count_calls(method: Callable) -> Callable:
     return wrapper
 
 
+def call_history(method: Callable) -> Callable:
+    """ store the history of inputs and outputs for a particular function """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """ wrapper function"""
+        name = method.__qualname__
+        self._redis.rpush(name + ":inputs", str(args))
+        result = method(self, *args, **kwargs)
+        self._redis.rpush(name + ":outputs", str(result))
+        return result
+    return wrapper
+
+
 class Cache:
     """ cache class """
 
@@ -31,6 +42,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """ stores data with a random key """
@@ -38,7 +50,7 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-    def get(self, key: str, fn: Union[None, Callable] = None) -> T:
+    def get(self, key: str, fn: Union[None, Callable] = None) -> Any:
         """ return data """
         result = self._redis.get(key)
         if not result or not fn:
