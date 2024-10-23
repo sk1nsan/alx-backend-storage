@@ -3,13 +3,13 @@
 
 import redis
 from uuid import uuid4
-from typing import Callable, TypeVar, Any, Union
+from typing import Callable, TypeVar, Union
 from functools import wraps
 
 T = TypeVar("T")
 
 
-def count_calls(method: Callable[..., Any]) -> Callable[..., Any]:
+def count_calls(method: Callable) -> Callable:
     """ keep track of the number of calls """
     @wraps(method)
     def wrapper(self, *args, **kwargs):
