@@ -10,8 +10,9 @@ cache = redis.Redis()
 def get_page(url: str) -> str:
     """ obtain the HTML content of a particular URL and returns it """
     key = f"count{url}"
-    if (not cache.get(key)):
-        cache.set(url, 1, ex=10)
-    else:
-        cache.incr(url)
+    result = requests.get(url).text
+
+    cache.incr(key)
+    cache.set(url, result, ex=10)
+
     return requests.get(url).text
