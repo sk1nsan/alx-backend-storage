@@ -38,7 +38,7 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-    def get(self, key: str, fn: Union[None, Callable[[bytes], T]] = None) -> T:
+    def get(self, key: str, fn: Union[None, Callable] = None) -> T:
         """ return data """
         result = self._redis.get(key)
         if not result or not fn:
