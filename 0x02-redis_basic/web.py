@@ -14,9 +14,10 @@ def get_page(url: str) -> str:
 
     cache.incr(count)
 
-    if (cache.get(result)):
-        return cache.get(result).decode('utf-8')
+    cached_result = cache.get(result)
+    if (cached_result):
+        return cached_result.decode('utf-8')
+
     response = requests.get(url).text
-    cache.set(count, 0)
     cache.set(result, response, ex=10)
     return response
