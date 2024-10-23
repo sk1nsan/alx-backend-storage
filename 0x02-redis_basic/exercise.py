@@ -3,7 +3,7 @@
 
 import redis
 from uuid import uuid4
-from typing import Callable, TypeVar, Any
+from typing import Callable, TypeVar, Any, Union
 from functools import wraps
 
 T = TypeVar("T")
@@ -32,13 +32,13 @@ class Cache:
         self._redis.flushdb()
 
     @count_calls
-    def store(self, data: str | bytes | int | float) -> str:
+    def store(self, data: Union[str, bytes, int, float]) -> str:
         """ stores data with a random key """
         key = str(uuid4())
         self._redis.set(key, data)
         return key
 
-    def get(self, key: str, fn: None | Callable[[bytes], T] = None) -> T:
+    def get(self, key: str, fn: Union[None, Callable[[bytes], T]] = None) -> T:
         """ return data """
         result = self._redis.get(key)
         if not result or not fn:
