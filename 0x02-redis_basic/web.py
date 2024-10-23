@@ -9,10 +9,13 @@ cache = redis.Redis()
 
 def get_page(url: str) -> str:
     """ obtain the HTML content of a particular URL and returns it """
-    key = f"count:{url}"
-    cache.incr(key)
-    if (cache.get(url)):
-        return cache.get(url).decode('utf-8')
-    result = requests.get(url).text
-    cache.set(url, result, ex=10)
-    return result
+    count = f"count:{url}"
+    result = f"result:{url}"
+
+    cache.incr(count)
+
+    if (cache.get(result)):
+        return cache.get(result).decode('utf-8')
+    response = requests.get(url).text
+    cache.set(result, response, ex=10)
+    return response
